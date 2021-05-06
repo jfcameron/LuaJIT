@@ -15,3 +15,7 @@ enable_language(ASM)
 include (GNUInstallDirs)
 
 add_subdirectory(src)
+
+set(LUAJIT_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src" PARENT_SCOPE)
+set(LUAJIT_LIBRARIES "${LUAJIT_LIBRARIES}" PARENT_SCOPE)
+

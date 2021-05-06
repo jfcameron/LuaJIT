@@ -497,6 +497,15 @@ endif()
 
 # Build the luajit static library
 add_library(libluajit ${luajit_sources})
+add_custom_command(TARGET libluajit 
+    POST_BUILD COMMAND 
+        ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libluajit> 
+            "${PROJECT_BINARY_DIR}/$<TARGET_FILE_NAME:libluajit>")
+if(WIN32)
+    set(LUAJIT_LIBRARIES "${PROJECT_BINARY_DIR}/libluajit.lib" PARENT_SCOPE)
+else()    
+    set(LUAJIT_LIBRARIES "${PROJECT_BINARY_DIR}/libluajit.a;${CMAKE_DL_LIBS}" PARENT_SCOPE)
+endif()
 set_target_properties(libluajit PROPERTIES OUTPUT_NAME luajit)
 add_dependencies(libluajit
   buildvm_arch_h
@@ -553,11 +562,3 @@ if ("${CMAKE_SYSTEM_NAME}" MATCHES "(Open|Free|Net)BSD")
   target_link_libraries(luajit c++abi pthread)
 endif()
 target_compile_definitions(luajit PRIVATE ${LJ_DEFINITIONS})
-
-set(luajit_headers lauxlib.h lua.h luaconf.h luajit.h lualib.h)
-install(FILES ${luajit_headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/luajit)
-install(TARGETS libluajit
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
-install(TARGETS luajit DESTINATION "${CMAKE_INSTALL_BINDIR}")
