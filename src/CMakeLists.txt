@@ -501,11 +501,9 @@ add_custom_command(TARGET libluajit
     POST_BUILD COMMAND 
         ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libluajit> 
             "${PROJECT_BINARY_DIR}/$<TARGET_FILE_NAME:libluajit>")
-if(WIN32)
-    set(LUAJIT_LIBRARIES "${PROJECT_BINARY_DIR}/libluajit.lib" PARENT_SCOPE)
-else()    
-    set(LUAJIT_LIBRARIES "${PROJECT_BINARY_DIR}/libluajit.a;${CMAKE_DL_LIBS}" PARENT_SCOPE)
-endif()
+set(LUAJIT_LIBRARIES 
+    "${PROJECT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}luajit${CMAKE_STATIC_LIBRARY_SUFFIX};${CMAKE_DL_LIBS}" 
+    PARENT_SCOPE)
 set_target_properties(libluajit PROPERTIES OUTPUT_NAME luajit)
 add_dependencies(libluajit
   buildvm_arch_h
